@@ -1,25 +1,19 @@
 import express from 'express';
 import { HfInference } from '@huggingface/inference';
-import cors from 'cors';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-const app = express();
-const port = 5000;
+const router = express.Router();
 
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
-app.use(cors());
-app.use(express.json());
-
-app.post('/api/review', async (req, res) => {
+router.post('/api/review', async (req, res) => {
     const { code } = req.body;
-    
     console.log('Received code:', code); // Log the received code
     if (!code) {
         return res.status(400).send({ error: 'Code is required' });
     }
-
     try {
         const response = await hf.request({
             model: 'EleutherAI/gpt-neo-1.3B',
@@ -32,12 +26,12 @@ app.post('/api/review', async (req, res) => {
 
         if (response && response[0] && response[0].generated_text) {
             const text = response[0].generated_text;
-        
+
             if (text.includes('A:')) {
-         
-                const indexOfA = text.indexOf('A:') + 2; 
+
+                const indexOfA = text.indexOf('A:') + 2;
                 const feedbackAfterA = text.slice(indexOfA).trim();
-        
+
                 if (feedbackAfterA) {
                     return res.json({ feedback: feedbackAfterA });
                 } else {
@@ -49,19 +43,15 @@ app.post('/api/review', async (req, res) => {
         } else {
             return res.status(500).send({ error: 'Unexpected response structure' });
         }
-        
-        
     }
     catch (error) {
         console.error('Error occurred:', error);
         return res.status(500).send({ error: 'Internal Server Error' });
     };
 });
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
 
-export default app;
+
+export default router;
 
 
 //openAi version
