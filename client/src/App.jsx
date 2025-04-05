@@ -6,12 +6,18 @@ export default function App() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
+    
+    const trimmedCode = code.trim();
+    console.log('Submitting code to backend:', trimmedCode); 
+
     setLoading(true);
+
     const res = await fetch('http://localhost:5000/api/review', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code })
+      body: JSON.stringify({ code: trimmedCode }) 
     });
+
     const data = await res.json();
     setFeedback(data.feedback);
     setLoading(false);
@@ -23,7 +29,7 @@ export default function App() {
       <textarea
         className="w-full max-w-3xl h-64 p-4 bg-gray-800 text-sm font-mono rounded-lg mb-4"
         value={code}
-        onChange={(e) => setCode(e.target.value)}
+        onChange={(e) => setCode(e.target.value)} 
         placeholder="Paste your JavaScript or TypeScript code here..."
       />
       <button
