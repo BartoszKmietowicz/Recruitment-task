@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import reviewRoute from './routes/review.js'; // ✅ Include `.js` extension
+import reviewRoute from './routes/review.js'; 
 
 dotenv.config();
 const app = express();
