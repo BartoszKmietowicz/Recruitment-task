@@ -1,15 +1,24 @@
 # Recruitment-task
  Recruitment task with OpenAI integration for checking code snippets
 
-# Starting the backend
-First, we need to start the backend
+# Installing dependencies and starting the backend
+First, we need to install the backend dependencies
+```bash
+cd server
+npm i
+```
+Then we can start the backend
 ```bash
 npm run dev
 ```
 # Starting the frontend
+We also need to install the front dependencies
 
-Then we can start the frontend
-
+```bash
+cd client
+npm i
+```
+Then we can start the front end
 ```bash
 npm run start
 ```
