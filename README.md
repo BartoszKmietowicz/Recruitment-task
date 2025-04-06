@@ -1,5 +1,5 @@
 # Recruitment-task
- Recruitment task with OpenAI integration for checking code snippets
+ Recruitment task with Hugging Face AI (OpenAI optional, uncomment code) integration for checking code snippets
 
 # Installing dependencies and starting the backend
 First, we need to install the backend dependencies
