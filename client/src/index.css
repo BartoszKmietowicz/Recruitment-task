@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@keyframes dot-blink {
+    0% { content: ''; }
+    33% { content: '.'; }
+    66% { content: '..'; }
+    100% { content: '...'; }
+  }
+  
+  .ellipsis {
+    position: relative;
+    display: inline-block;
+    width: 0.6em; /* Adjust width so the animation fits properly */
+  }
+  
+  .ellipsis:after {
+    content: '';
+    animation: dot-blink 1s infinite steps(1);
+  }

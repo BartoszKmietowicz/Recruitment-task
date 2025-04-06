@@ -8,51 +8,42 @@ const router = express.Router();
 
 const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
-router.post('/api/review', async (req, res) => {
+router.post('/', async (req, res) => {
     const { code } = req.body;
-    console.log('Received code:', code); // Log the received code
+    console.log('Received code:', code);  // Log the received code
+    
     if (!code) {
-        return res.status(400).send({ error: 'Code is required' });
+        return res.status(400).json({ error: 'Code is required' });  // Return JSON error
     }
+
     try {
-        const response = await hf.request({
-            model: 'EleutherAI/gpt-neo-1.3B',
+        const response = await hf.textGeneration({
+            model: 'tiiuae/falcon-7b-instruct',
             inputs: `Analyze the following JavaScript/TypeScript code and provide feedback on best practices, performance, and possible errors: \n\n${code}`,
             parameters: {
-                max_length: 500,
+                max_new_tokens: 500,
                 temperature: 0.7,
             },
         });
 
-        if (response && response[0] && response[0].generated_text) {
-            const text = response[0].generated_text;
+        // Log the full response to check the structure
+        console.log('HuggingFace response:', response);
 
-            if (text.includes('A:')) {
+        if (response && response.generated_text) {
+            const text = response.generated_text;
+            console.log('Generated text:', text);  // Log the generated text
 
-                const indexOfA = text.indexOf('A:') + 2;
-                const feedbackAfterA = text.slice(indexOfA).trim();
-
-                if (feedbackAfterA) {
-                    return res.json({ feedback: feedbackAfterA });
-                } else {
-                    return res.status(500).send({ error: 'No feedback after "A:"' });
-                }
-            } else {
-                return res.status(500).send({ error: 'Response does not contain expected "A:"' });
-            }
+            return res.json({ feedback: text });  // Send the response with structured feedback
         } else {
-            return res.status(500).send({ error: 'Unexpected response structure' });
+            return res.status(500).json({ error: 'Failed to generate feedback from HuggingFace' });
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error occurred:', error);
-        return res.status(500).send({ error: 'Internal Server Error' });
-    };
+        return res.status(500).json({ error: 'Internal Server Error' });  // Return JSON error
+    }
 });
 
-
 export default router;
-
 
 //openAi version
 
